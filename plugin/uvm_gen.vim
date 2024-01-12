@@ -71,193 +71,192 @@ function! UVM_CheckGlobal (name)
 endfunction    " ----------  end of function C_CheckGlobal ----------
 
 function! UVMTest(name, ...)
-    let a:template_filename = (a:0 >= 1) ? "uvm_test.svht" : "uvm_test_base.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
-    let a:base = (a:0 >= 1) ? a:1 : "none"
+    let template_filename = (a:0 >= 1) ? "uvm_test.svht" : "uvm_test_base.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
+    let base = (a:0 >= 1) ? a:1 : "none"
 	
-	call <SID>TLoadCmd(a:template)
+	call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("UPPERNAME", uppername)
 	if a:0 >= 1
-		call <SID>TExpand("BASE", a:base)
+		call <SID>TExpand("BASE", base)
 	endif
     call <SID>TPutCursor()
 endfunction
 
 function! UVMEnv(name)
-    let a:template_filename = "uvm_env.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
+    let template_filename = "uvm_env.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("UPPERNAME", uppername)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMAgent(name)
-    let a:template_filename = "uvm_agent.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
-    let a:transaction = a:name . "_item"
+    let template_filename = "uvm_agent.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
+    let transaction = a:name . "_item"
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
-    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TExpand("UPPERNAME", uppername)
+    call <SID>TExpand("TRANSACTION", transaction)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMDriver(name)
-    let a:template_filename = "uvm_driver.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
-    let a:transaction = a:name . "_item"
+    let template_filename = "uvm_driver.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
+    let transaction = a:name . "_item"
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
-    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TExpand("UPPERNAME", uppername)
+    call <SID>TExpand("TRANSACTION", transaction)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMMon(name)
-    let a:template_filename = "uvm_monitor.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
-    let a:transaction = a:name . "_item"
+    let template_filename = "uvm_monitor.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
+    let transaction = a:name . "_item"
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
-    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TExpand("UPPERNAME", uppername)
+    call <SID>TExpand("TRANSACTION", transaction)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMSeqr(name)
-    let a:template_filename = "uvm_sequencer.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
-    let a:transaction = a:name . "_item"
+    let template_filename = "uvm_sequencer.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
+    let transaction = a:name . "_item"
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
-    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TExpand("UPPERNAME", uppername)
+    call <SID>TExpand("TRANSACTION", transaction)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMCov(name)
-    let a:template_filename = "uvm_coverage.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
-    let a:transaction = a:name . "_item"
+    let template_filename = "uvm_coverage.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
+    let transaction = a:name . "_item"
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
-    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TExpand("UPPERNAME", uppername)
+    call <SID>TExpand("TRANSACTION", transaction)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMScbd(name)
-    let a:template_filename = "uvm_scoreboard.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
-    let a:transaction = a:name . "_item"
+    let template_filename = "uvm_scoreboard.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
+    let transaction = a:name . "_item"
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
-    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TExpand("UPPERNAME", uppername)
+    call <SID>TExpand("TRANSACTION", transaction)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMSeq(name, ...)
-    let a:template_filename = (a:0 >= 1) ? "uvm_sequence.svht" : "uvm_sequence_base.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
-    let a:transaction = a:name . "_item"
-    let a:base = (a:0 >= 1) ? a:1 : "uvm_sequence#(".a:transaction.")"
+    let template_filename = (a:0 >= 1) ? "uvm_sequence.svht" : "uvm_sequence_base.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
+    let transaction = a:name . "_item"
+    let base = (a:0 >= 1) ? a:1 : "uvm_sequence#(".transaction.")"
     
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
-    call <SID>TExpand("BASE", a:base)
+    call <SID>TExpand("UPPERNAME", uppername)
+    call <SID>TExpand("BASE", base)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMTr(name)
-    let a:template_filename = "uvm_transaction.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
+    let template_filename = "uvm_transaction.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("UPPERNAME", uppername)
     call <SID>TPutCursor()
 endfunction
  
 function! UVMConfig(name)
-    let a:template_filename = "uvm_config.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
+    let template_filename = "uvm_config.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("UPPERNAME", uppername)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMInterface(name)
-    let a:template_filename = "uvm_interface.svt"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
+    let template_filename = "uvm_interface.svt"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("UPPERNAME", uppername)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMCommon(name)
-    let a:template_filename = "uvm_common.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
+    let template_filename = "uvm_common.svht"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
     
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("UPPERNAME", uppername)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMPackage(name)
-    let a:template_filename = "uvm_pkg.svt"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
+    let template_filename = "uvm_pkg.svt"
+    let template = s:default_template_dir . "/" . template_filename
+    let uppername = toupper(a:name)
 
-    call <SID>TLoadCmd(a:template)
+    call <SID>TLoadCmd(template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("UPPERNAME", uppername)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMEmpty(name)
-    let a:template_filename = "uvm_empty.svht"
-    let a:template = s:default_template_dir . "/" . a:template_filename
-    let a:uppername = toupper(a:name)
+	let template_filename = "uvm_empty.svht"
+	let template = s:default_template_dir . "/" . template_filename
+	let uppername = toupper(a:name)
 
-    call <SID>TLoadCmd(a:template)
-    "call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", a:uppername)
-    call <SID>TPutCursor()
+	call <SID>TLoadCmd(template)
+	call <SID>TExpand("UPPERNAME", uppername)
+	call <SID>TPutCursor()
 endfunction
 
 
 " === plugin commands === {{{
 
-command -nargs=+ UVMTest 	call UVMTest(<f-args>)
+command -nargs=+ UVMTest    call UVMTest(<f-args>)
 command -nargs=1 UVMEnv     call UVMEnv("<args>")
 command -nargs=1 UVMAgent   call UVMAgent("<args>")
 command -nargs=1 UVMDriver  call UVMDriver("<args>")

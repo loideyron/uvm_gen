@@ -38,4 +38,3 @@ task {:NAME:}_base_seq::post_start;
 endtask : post_start
 
 `endif // __{:UPPERNAME:}_BASE_SEQ_SVH_
-

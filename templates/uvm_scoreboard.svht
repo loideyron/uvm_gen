@@ -69,4 +69,3 @@ function void {:NAME:}_scoreboard::write_item({:TRANSACTION:} item);
 endfunction: write_item
 
 `endif // __{:UPPERNAME:}_SCOREBOARD_SVH_
-
