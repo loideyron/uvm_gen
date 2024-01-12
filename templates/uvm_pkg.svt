@@ -1,0 +1,22 @@
+`ifndef __{:UPPERNAME:}_PKG_SV_
+`define __{:UPPERNAME:}_PKG_SV_
+
+package {:NAME:}_pkg;
+    import uvm_pkg::*;
+    `include "uvm_macros.svh"
+    
+    `include "{:NAME:}_common.svh"
+    `include "{:NAME:}_config.svh"
+ 
+    `include "{:NAME:}_item.svh"
+    `include "{:NAME:}_coverage.svh"  
+    `include "{:NAME:}_monitor.svh"
+    `include "{:NAME:}_sequencer.svh"
+    `include "{:NAME:}_driver.svh"
+    `include "{:NAME:}_agent.svh"
+    `include "{:NAME:}_env.svh"
+    
+    `include "{:NAME:}_seq_lib.svh"
+endpackage: {:NAME:}_pkg
+
+`endif // __{:UPPERNAME:}_PKG_SV_

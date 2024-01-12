@@ -1,0 +1,72 @@
+`ifndef __{:UPPERNAME:}_SCOREBOARD_SVH_
+`define __{:UPPERNAME:}_SCOREBOARD_SVH_
+
+class {:NAME:}_scoreboard extends uvm_scoreboard;
+    /* == Configuration Handle == */
+    {:NAME:}_config m_cfg;
+
+    /* == Analysis Ports == */
+    uvm_analysis_imp_item#({:TRANSACTION:}, {:NAME:}_scoreboard) m_aimp_item;
+    
+    /* == Component Fields == */ 
+    bit checks_enable = 'b1;
+
+    `uvm_component_utils_begin({:NAME:}_scoreboard)
+        `uvm_field_object(m_cfg, UVM_ALL_ON)
+        `uvm_field_int(check_enable, UVM_DEFAULT + UVM_BIN)
+    `uvm_component_utils_end
+
+    function new (string name, uvm_component parent = null);
+        super.new(name, parent);
+        m_aimp_item = new("m_aimp_item", this);
+    endfunction: new
+    
+    /* == Phases == */
+    extern virtual function void    build_phase(uvm_phase phase);
+    extern virtual function void    connect_phase(uvm_phase phase);
+    extern virtual task             run_phase(uvm_phase phase);
+    extern virtual function void    extract_phase(uvm_phase phase);
+    extern virtual function void    check_phase(uvm_phase phase);
+    extern virtual function void    report_phase(uvm_phase phase); 
+   
+    /* == Methods == */
+    extern virtual function void write_item({:TRANSACTION:} item);
+endclass: {:NAME:}_scoreboard
+
+/* == Implementation == */
+
+function void {:NAME:}_scoreboard::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (m_cfg == null) begin
+        if (!uvm_config_db #({:NAME:}_config)::get(this, "", "m_cfg", m_cfg)) begin
+            `uvm_fatal("CFG", "Missing configuration object!")
+        end
+    end 
+endfunction: build_phase
+
+function void {:NAME:}_scoreboard::connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+endfunction: connect_phase
+
+task {:NAME:}_scoreboard::run_phase(uvm_phase phase);
+    super.run_phase(phase);
+endtask: run_phase
+
+function void {:NAME:}_scoreboard::extract_phase(uvm_phase phase);
+    super.extract_phase(phase);
+endfunction: extract_phase
+
+function void {:NAME:}_scoreboard::check_phase(uvm_phase phase);
+    super.check_phase(phase);
+endfunction: check_phase
+
+function void {:NAME:}_scoreboard::report_phase(uvm_phase phase);
+    super.report_phase(phase);
+endfunction: report_phase
+
+function void {:NAME:}_scoreboard::write_item({:TRANSACTION:} item);
+
+endfunction: write_item
+
+`endif // __{:UPPERNAME:}_SCOREBOARD_SVH_
+

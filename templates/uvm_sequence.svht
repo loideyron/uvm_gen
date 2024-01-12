@@ -1,0 +1,27 @@
+`ifndef __{:UPPERNAME:}_SEQ_SVH_
+`define __{:UPPERNAME:}_SEQ_SVH_
+
+class {:NAME:}_seq extends {:BASE:};
+    /* == Sequence Items == */
+     
+    `uvm_object_utils_begin({:NAME:}_seq)
+    `uvm_object_utils_end  
+
+    function new (string name="{:NAME:}_seq");
+        super.new(name);
+    endfunction: new
+
+    /* == Constraints == */
+
+    /* == Methods == */
+    extern virtual task body;
+endclass: {:NAME:}_seq
+
+/* == Implementation == */
+
+task {:NAME:}_seq::body;
+
+endtask: body
+
+`endif // __{:UPPERNAME:}_SEQ_SVH_
+

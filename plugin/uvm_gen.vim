@@ -1,64 +1,20 @@
-" Vim Plugin for UVM Code Automactic Generation
-" Language:     Vim
-" Maintainer:   Hong Jin <hon9jin@gmail.com>
-" Version:      0.20
-" Modified:     2017-11-03 14:37
-" For version 7.x or above
+" Vim UVM Generator Plugin
+" Language        :   Vim
+" Original Creator:   Hong Jin <hon9jin@gmail.com>
+" -----------------------------------------------------
+" Forked by Lloyd Yandoc <https://github.com/loideyron>
+" * updates for personal / professional use
+" For version vim7.x or above
 
+" vimrc: setup reload
 if (exists("g:uvm_plugin_loaded") && g:uvm_plugin_loaded)
    finish
 endif
 let g:uvm_plugin_loaded = 1
 
+" vimrc: setup compatible mode
 let s:save_cpo = &cpo
 set cpo&vim
-
-" set Author in the header
-if exists("g:uvm_author")
-    let s:uvm_author     = g:uvm_author
-else
-    let s:uvm_author     = $USER
-endif
-
-" set email address in the header
-if exists("g:uvm_email")
-    let s:uvm_email      = g:uvm_email
-else
-    let s:uvm_email      = s:uvm_author . "@gmail.com"
-endif
-
-" set company in the header
-if exists("g:uvm_company")
-    let s:uvm_company    = g:uvm_company
-else
-    let s:uvm_company    = ""
-endif
-
-" set deparment in the header
-if exists("g:uvm_department")
-    let s:uvm_department = g:uvm_department
-else
-    let s:uvm_department = ""
-endif
-" comment line
-let s:uvm_linecomment    = "//"
-let s:uvm_seprateline    = "----------------------------------------------------------------------"
-let s:uvm_copyright      = "All rights reserved."
-let s:uvm_filename       = "File        : " . expand("%:t")
-let s:header_author      = "Author      : " . s:uvm_author
-let s:header_email       = "EMail       : " . s:uvm_email
-let s:uvm_created        = "Created     : " . strftime ("%Y-%m-%d %H:%M:%S")
-let s:uvm_modified       = "Modified    : " . strftime ("%Y-%m-%d %H:%M:%S")
-let s:uvm_description    = "Description : "
-let s:uvm_history        = "History:"
-let s:uvm_history_title  = "    Revision    Author    Date        Log"
-let s:uvm_rev_1          = "    1.0         " . s:uvm_author . "  " . strftime ("%Y-%m-%d") . "  "
-let s:uvm_history_author = "    Author   : " . s:uvm_author
-let s:uvm_history_date   = "    Date     : " . strftime ("%Y-%m-%d %H:%M:%S")
-let s:uvm_history_rev    = "    Revision : 1.0"
-
-" List of all types
-let s:type_list = ["agent","config","driver","env","monitor","sequence","test","top","item","interface"]
 
 " normalize the path
 " replace the windows path sep \ with /
@@ -77,7 +33,6 @@ endfunction
 let s:default_template_dir = <SID>DirName(<SID>DirName(expand("<sfile>"))) . "templates"
 
 " Makes a single [variable] expansion, using [value] as replacement.
-"
 function <SID>TExpand(variable, value)
     silent execute "%s/{:" . a:variable . ":}/" .  a:value . "/g"
 endfunction
@@ -85,7 +40,6 @@ endfunction
 " Puts the cursor either at the first line of the file or in the place of
 " the template where the %HERE% string is found, removing %HERE% from the
 " template.
-"
 function <SID>TPutCursor()
     0  " Go to first line before searching
     if search("{:HERE:}", "W")
@@ -102,270 +56,224 @@ function <SID>TLoadCmd(template)
         " let l:tFile = a:template
         if a:template != ""
             execute "r " . a:template
-            " call <SID>TExpandVars()
-            " call <SID>TPutCursor()
             setlocal nomodified
         endif
     else
         echo "ERROR! Can not find" . a:template
     endif
-
 endfunction
 
-"
-"  Look for global variables (if any), to override the defaults.
-"
-function! UVM_CheckGlobal(name)
+function! UVM_CheckGlobal (name)
+" Look for global variables (if any), to override the defaults.
   if exists('g:'.a:name)
     exe 'let s:'.a:name.'  = g:'.a:name
   endif
 endfunction    " ----------  end of function C_CheckGlobal ----------
 
-" make a header
-function s:UVMAddHeader()
-    call append (0,  s:uvm_linecomment . " " . s:uvm_seprateline)
-    call append (1,  s:uvm_linecomment . " " . s:uvm_company)
-    call append (2,  s:uvm_linecomment . " " . s:uvm_department)
-    call append (3,  s:uvm_linecomment . " " . s:uvm_copyright)
-    call append (4,  s:uvm_linecomment)
-    call append (5,  s:uvm_linecomment . " " . s:uvm_filename)
-    call append (6,  s:uvm_linecomment . " " . s:header_author)
-    call append (7,  s:uvm_linecomment . " " . s:header_email)
-    call append (8,  s:uvm_linecomment . " " . s:uvm_created)
-    call append (9,  s:uvm_linecomment . " " . s:uvm_modified)
-    call append (10, s:uvm_linecomment . " " . s:uvm_description)
-    call append (11, s:uvm_linecomment . " " . s:uvm_seprateline)
-    call append (12, s:uvm_linecomment . " " . s:uvm_history)
-    call append (13, s:uvm_linecomment . " " . s:uvm_history_title)
-    call append (14, s:uvm_linecomment . " " . s:uvm_rev_1)
-    " call append (13, s:uvm_linecomment . " " . s:uvm_history_author)
-    " call append (14, s:uvm_linecomment . " " . s:uvm_history_date)
-    " call append (15, s:uvm_linecomment . " " . s:uvm_history_rev)
-    call append (15, s:uvm_linecomment . " " . s:uvm_seprateline)
-    call append (16, "")
-
-    " call <SID>TPutCursor()
-    echo "Successfully added the header!"
-endfunction
-
-function! UVMEnv(name)
-    let template_filename = "uvm_env.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    let lowername = tolower(a:name)
-
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
+function! UVMTest(name, ...)
+    let a:template_filename = (a:0 >= 1) ? "uvm_test.svht" : "uvm_test_base.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    let a:base = (a:0 >= 1) ? a:1 : "none"
+	
+	call <SID>TLoadCmd(a:template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+	if a:0 >= 1
+		call <SID>TExpand("BASE", a:base)
+	endif
     call <SID>TPutCursor()
 endfunction
 
-function! UVMTest(name)
-    let template_filename = "uvm_test.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    " let lowername = tolower(a:name)
+function! UVMEnv(name)
+    let a:template_filename = "uvm_env.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
 
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
-    if (a:name == "base")
-        " let a:name_temp = "tc_" . a:name
-        let name_temp = "base_test"
-        let parent_name = "uvm_test"
-    else
-        " let a:name_temp = a:name . "_test"
-        let name_temp = "test"
-        let parent_name = "base_base"
-    endif
-    call <SID>TExpand("NAME", name_temp)
-    call <SID>TExpand("PARENT", parent_name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
+    call <SID>TLoadCmd(a:template)
+    call <SID>TExpand("NAME", a:name)
+    call <SID>TExpand("UPPERNAME", a:uppername)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMAgent(name)
-    let template_filename = "uvm_agent.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    " let lowername = tolower(a:name)
+    let a:template_filename = "uvm_agent.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    let a:transaction = a:name . "_item"
 
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
+    call <SID>TLoadCmd(a:template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    call <SID>TExpand("LOWERNAME", lowername)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("TRANSACTION", a:transaction)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMDriver(name)
-    let template_filename = "uvm_driver.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    let lowername = tolower(a:name)
-    let transaction = a:name . "Trans"
+    let a:template_filename = "uvm_driver.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    let a:transaction = a:name . "_item"
 
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
+    call <SID>TLoadCmd(a:template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
-    call <SID>TExpand("TRANSACTION", transaction)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("TRANSACTION", a:transaction)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMMon(name)
-    let template_filename = "uvm_monitor.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    let lowername = tolower(a:name)
-    let transaction = a:name . "Trans"
+    let a:template_filename = "uvm_monitor.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    let a:transaction = a:name . "_item"
 
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
+    call <SID>TLoadCmd(a:template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
-    call <SID>TExpand("TRANSACTION", transaction)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("TRANSACTION", a:transaction)
     call <SID>TPutCursor()
 endfunction
 
-function! UVMSeq(name)
-    let template_filename = "uvm_sequence.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    let lowername = tolower(a:name)
-    let transaction = a:name . "Trans"
+function! UVMSeqr(name)
+    let a:template_filename = "uvm_sequencer.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    let a:transaction = a:name . "_item"
 
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
+    call <SID>TLoadCmd(a:template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
-    call <SID>TExpand("TRANSACTION", transaction)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TPutCursor()
+endfunction
+
+function! UVMCov(name)
+    let a:template_filename = "uvm_coverage.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    let a:transaction = a:name . "_item"
+
+    call <SID>TLoadCmd(a:template)
+    call <SID>TExpand("NAME", a:name)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TPutCursor()
+endfunction
+
+function! UVMScbd(name)
+    let a:template_filename = "uvm_scoreboard.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    let a:transaction = a:name . "_item"
+
+    call <SID>TLoadCmd(a:template)
+    call <SID>TExpand("NAME", a:name)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("TRANSACTION", a:transaction)
+    call <SID>TPutCursor()
+endfunction
+
+function! UVMSeq(name, ...)
+    let a:template_filename = (a:0 >= 1) ? "uvm_sequence.svht" : "uvm_sequence_base.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    let a:transaction = a:name . "_item"
+    let a:base = (a:0 >= 1) ? a:1 : "uvm_sequence#(".a:transaction.")"
+    
+    call <SID>TLoadCmd(a:template)
+    call <SID>TExpand("NAME", a:name)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TExpand("BASE", a:base)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMTr(name)
-    let template_filename = "uvm_transaction.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    let lowername = tolower(a:name)
+    let a:template_filename = "uvm_transaction.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
 
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
+    call <SID>TLoadCmd(a:template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
+    call <SID>TExpand("UPPERNAME", a:uppername)
     call <SID>TPutCursor()
 endfunction
-
-function! UVMTop(name)
-    let template_filename = "uvm_test_top.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    let lowername = tolower(a:name)
-
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
-    call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
-    call <SID>TPutCursor()
-endfunction
-
+ 
 function! UVMConfig(name)
-    let template_filename = "uvm_config.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    let lowername = tolower(a:name)
+    let a:template_filename = "uvm_config.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
 
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
+    call <SID>TLoadCmd(a:template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
+    call <SID>TExpand("UPPERNAME", a:uppername)
     call <SID>TPutCursor()
 endfunction
 
 function! UVMInterface(name)
-    let template_filename = "uvm_interface.sv"
-    let template = s:default_template_dir . "/" . template_filename
-    let uppername = toupper(a:name)
-    let lowername = tolower(a:name)
+    let a:template_filename = "uvm_interface.svt"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
 
-    " call s:UVMAddHeader()
-    call <SID>TLoadCmd(template)
+    call <SID>TLoadCmd(a:template)
     call <SID>TExpand("NAME", a:name)
-    call <SID>TExpand("UPPERNAME", uppername)
-    " call <SID>TExpand("LOWERNAME", lowername)
+    call <SID>TExpand("UPPERNAME", a:uppername)
     call <SID>TPutCursor()
 endfunction
 
-" According to the args, call different methods
-"
-function UVMGen(type, name)
-" function UVMGen(...)
-"     let a:args_num = a:0
-"     let a:type = a:1
-"     let a:name = a:2
-    if (a:type== "agent")
-        call UVMAgent(a:name)
-    elseif (a:type== "config")
-        call UVMConfig(a:name)
-    elseif (a:type== "interface")
-        call UVMInterface(a:name)
-    elseif (a:type== "driver") || (a:type == "drv")
-        call UVMDriver(a:name)
-    elseif (a:type== "env")
-        call UVMEnv(a:name)
-    elseif (a:type== "monitor") || (a:type == "mon")
-        call UVMMon(a:name)
-    elseif (a:type== "sequence") || (a:type == "seq")
-        call UVMSeq(a:name)
-    elseif (a:type== "test")
-        call UVMTest(a:name)
-    elseif (a:type== "top")
-        call UVMTop(a:name)
-    elseif (a:type== "item") || (a:type == "it")
-        call UVMTr(a:name)
-    else
-        echo "The first ARG, Please following the instructions:"
-        echo " env              - Generate UVM Env"
-        echo " agent            - Generate UVM Agent"
-        echo " config           - Generate UVM Config"
-        echo " interface        - Generate UVM Interface"
-        echo " driver / drv     - Generate UVM Driver"
-        echo " monitor / mon    - Generate UVM Monitor"
-        echo " sequence / seq   - Generate UVM Sequence"
-        echo " test             - Generate UVM Test"
-        echo " top              - Generate UVM Top"
-        echo " item / it        - Generate UVM Sequence Item"
-    endif
-endf
+function! UVMCommon(name)
+    let a:template_filename = "uvm_common.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+    
+    call <SID>TLoadCmd(a:template)
+    call <SID>TExpand("NAME", a:name)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TPutCursor()
+endfunction
 
-" Return types name as arguments
-function ReturnTypesList(A,L,P)
-    return s:type_list
-endf
+function! UVMPackage(name)
+    let a:template_filename = "uvm_pkg.svt"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+
+    call <SID>TLoadCmd(a:template)
+    call <SID>TExpand("NAME", a:name)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TPutCursor()
+endfunction
+
+function! UVMEmpty(name)
+    let a:template_filename = "uvm_empty.svht"
+    let a:template = s:default_template_dir . "/" . a:template_filename
+    let a:uppername = toupper(a:name)
+
+    call <SID>TLoadCmd(a:template)
+    "call <SID>TExpand("NAME", a:name)
+    call <SID>TExpand("UPPERNAME", a:uppername)
+    call <SID>TPutCursor()
+endfunction
+
 
 " === plugin commands === {{{
-command -nargs=0 UVMAddHeader call s:UVMAddHeader()
-command -nargs=1 UVMEnv call UVMEnv("<args>")
-command -nargs=1 UVMTest call UVMTest("<args>")
-command -nargs=1 UVMAgent call UVMAgent("<args>")
-command -nargs=1 UVMDriver call UVMDriver("<args>")
-command -nargs=1 UVMMon call UVMMon("<args>")
-command -nargs=1 UVMSeq call UVMSeq("<args>")
-command -nargs=1 UVMTr call UVMTr("<args>")
-command -nargs=1 UVMItem call UVMTr("<args>")
-command -nargs=1 UVMTop call UVMTop("<args>")
-command -nargs=1 UVMConfig call UVMConfig("<args>")
-command -nargs=1 UVMInterface call UVMInterface("<args>")
-command -nargs=+ -complete=customlist,ReturnTypesList UVMGen call UVMGen(<f-args>)
+
+command -nargs=+ UVMTest 	call UVMTest(<f-args>)
+command -nargs=1 UVMEnv     call UVMEnv("<args>")
+command -nargs=1 UVMAgent   call UVMAgent("<args>")
+command -nargs=1 UVMDriver  call UVMDriver("<args>")
+command -nargs=1 UVMMon     call UVMMon("<args>")
+command -nargs=1 UVMCov     call UVMCov("<args>")
+command -nargs=1 UVMSeqr    call UVMSeqr("<args>")
+command -nargs=1 UVMScbd    call UVMScbd("<args>")
+command -nargs=+ UVMSeq     call UVMSeq(<f-args>)
+command -nargs=1 UVMItem    call UVMTr("<args>")
+command -nargs=1 UVMConfig  call UVMConfig("<args>")
+command -nargs=1 UVMIntf    call UVMInterface("<args>")
+command -nargs=1 UVMCommon  call UVMCommon("<args>")
+command -nargs=1 UVMPkg     call UVMPackage("<args>")
+command -nargs=1 UVMEmpty   call UVMEmpty("<args>");
 " }}}
 
+" cleanup
 let &cpo = s:save_cpo
 unlet s:save_cpo

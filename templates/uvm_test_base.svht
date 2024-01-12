@@ -1,0 +1,108 @@
+`ifndef __{:UPPERNAME:}_BASE_TEST_SVH_
+`define __{:UPPERNAME:}_BASE_TEST_SVH_
+
+class {:NAME:}_base_test extends ais_uvm_test;
+    `uvm_component_utils({:NAME:}_base_test)
+
+    /* == Top Level Configuration/s == */
+    {:NAME:}_config     m_cfg;
+
+    /* == Top Level Environment/s == */
+    {:NAME:}_env        m_env;
+    
+    /* == Top Level Register Model/s == */
+    {:NAME:}_reg_model  m_rgm;
+    
+    /* == Top Level Sequence/s == */
+    // TODO: declare common top level sequence/s
+
+    /* == Component Fields == */
+    const time run_phase_drain_time = 100ns;
+
+    function new(string name = "{:NAME:}_base_test", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction: new
+    
+    /* == Phases == */
+    extern virtual function void    build_phase(uvm_phase phase);
+    extern virtual function void    connect_phase(uvm_phase phase);
+    extern virtual task             run_phase(uvm_phase phase);
+
+    /* == AIS UVM Methods == */
+    extern protected virtual function void override_uvm();
+
+    /* == Methods == */
+    extern protected virtual function void  setup_configurations();
+    extern protected virtual function void  configure_testbench();
+    extern protected virtual function void  configure_reg_model();
+    extern protected virtual function void  setup_interfacess();
+    /* == Main Methods == */
+    extern protected virtual task main();
+endclass: {:NAME:}_base_test
+
+/* == Implementation == */
+
+function void {:NAME:}_base_test::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    // build config
+    m_cfg = {:NAME:}_config::type_id::create("m_cfg", this);
+    if (!randomize(m_cfg)) `uvm_fatal("RAND", "Failed configuration object randomization!");
+    setup_configurations();
+    // build environment
+    uvm_config_db#({:NAME:}_config)::set(this, "m_env", "m_cfg", m_cfg);
+    m_env = {:NAME:}_env::type_id::create("m_env", this);
+    configure_testbench();
+    // build register model
+    m_rgm = {:NAME:}_reg_model::type_id::create("m_rgm");
+    configure_reg_model();
+    // get/set interface
+    setup_interfacess();
+endfunction: build_phase
+
+function void {:NAME:}_base_test::connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+    // TODO: connect downstream    
+endfunction: connect_phase
+
+task {:NAME:}_base_test::run_phase(uvm_phase phase);
+    super.run_phase;
+    // set-up drain time, to avoid abrupt end of test
+    phase.phase_done.set_drain_time(this, run_phase_drain_time);
+    // run main method
+    phase.raise_objection(this, {get_type_name(), ".main() started"});
+    main();
+    phase.drop_objection(this, {get_type_name(), ".main ended"})
+endtask: run_phase
+
+// this function is called as the very first build step of the ais_uvm_test base class
+function void {:NAME:}_base_test::override_uvm();
+    super.override_uvm();
+    // TODO: set type overrides
+    // TODO: set instance overrides
+endfunction: override_uvm
+
+// this function is used update configuration object
+function void {:NAME:}_base_test:setup_configurations();
+    // TODO: set configuration/s
+endfunction: setup_configurations
+
+// this function is used to insert testbecnh configuration steps after build
+function void {:NAME:}_base_test::configure_testbench();
+    // TODO: set testbench
+endfunction: configure_testbench
+
+// this function is used to get/set virtual interfaces
+function void {:NAME:}_base_test::setup_interfacess();
+    // get/set harness interface
+    if(!uvm_config_db#(virtual {:NAME:}_interface)::get(this, "", "{:NAME:}_if", m_cfg.vif)) begin
+        `uvm_fatal(get_type_name(), {"{:NAME:}_if", " virtual interface not found!"});
+    end
+   // TODO: get/set other interfaces 
+endfunction: setup_interfacess
+
+// this function implements the individual test steps
+task {:NAME:}_base_test::main();
+    `uvm_fatal(get_type_name(), "Main Method not implemented!") 
+endtask: main
+
+`endif // _{:UPPERNAME:}_BASE_TEST_SVH_

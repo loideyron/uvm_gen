@@ -1,0 +1,49 @@
+`ifndef __{:UPPERNAME:}_ENV_SVH_
+`define __{:UPPERNAME:}_ENV_SVH_
+
+class {:NAME:}_env extends uvm_env;
+    /* == Configuration Handle == */
+    {:NAME:}_config m_cfg;
+
+    /* == Component Members == */
+    {:NAME:}_agent m_agent;
+
+    /* == Component Fields == */
+
+    `uvm_component_utils_begin({:NAME:}_env)
+        `uvm_field_object(m_cfg, UVM_ALL_ON)
+    `uvm_component_utils_end
+    
+    function new(string name, uvm_component parent);
+        super.new(name, parent);
+    endfunction: new
+   
+    /* == Phases == */ 
+    extern virtual function void    build_phase(uvm_phase phase);
+    extern virtual function void    connect_phase(uvm_phase phase);
+    extern virtual function void    end_of_elaboration_phase(uvm_phase phase);
+endclass : {:NAME:}_env
+
+/* == Implementation == */
+
+function void {:NAME:}_env::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (m_cfg == null) begin
+        if (!uvm_config_db #({:NAME:}_config)::get(this, "", "m_cfg", m_cfg)) begin
+            `uvm_fatal("CFG", "Missing configuration object!")
+        end
+    end
+    uvm_config_db #({:NAME:}_config)::set(this, "*", "m_cfg", m_cfg);
+
+    m_agent = {:NAME:}_agent::type_id::create("m_agent", this);
+endfunction: build_phase
+
+function void {:NAME:}_env::connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+endfunction: connect_phase
+
+function void {:NAME:}_env::end_of_elaboration_phase(uvm_phase phase);
+    super.end_of_elaboration_phase(phase);
+endfunction: end_of_elaboration_phase
+
+`endif // _{:UPPERNAME:}_ENV_SVH_

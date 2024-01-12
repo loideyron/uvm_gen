@@ -1,0 +1,52 @@
+`ifndef __{:UPPERNAME:}_COVERAGE_SVH_
+`define __{:UPPERNAME:}_COVERAGE_SVH_
+
+class {:NAME:}_coverage extends uvm_component;
+    /* == Configuration Handle == */
+    {:NAME:}_config   m_cfg;
+
+    /* == Component Fields == */
+    bit coverages_enable = 'b1;
+
+    `uvm_component_utils_begin({:NAME:}_coverage)
+        `uvm_field_object(m_cfg, UVM_ALL_ON)
+        `uvm_field_int(coverages_enable, UVM_DEFAULT + UVM_BIN)
+    `uvm_component_utils_end
+    
+    /* == Cover Group == */
+    covergroup cg_transaction;
+        options.per_instance = 1;
+        // TODO: add cover points
+        //cp_XXX: coverpoint XXX;
+        //cross_XXX: cross XXX, YYY;
+    endgroup: cg
+    
+    function new(string name, uvm_component parent = null);
+        super.new(name, parent);
+        cg_transaction = new;
+        cg_transaction.set_inst_name({get_full_name(), ".cg_transaction"});
+    endfunction: new
+   
+    /* == Phases == */ 
+    extern virtual function void build_phase(uvm_phase phase);
+
+    /* == Methods == */
+    extern virtual function void sample({:TRANSACTION:} cover_item);
+endclass
+
+/* == Implementation == */
+
+function void {:NAME:}_coverage::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (m_cfg == null) begin
+        if (!uvm_config_db #({:NAME:}_config)::get(this, "", "m_cfg", m_cfg)) begin
+            `uvm_fatal("CFG", "Missing configuration object!")
+        end
+    end
+endfunction: build_phase
+
+function void {:NAME:}_coverage::sample({:TRANSACTION:} cover_item);
+    if (coverages_enable) cg_transaction.sample();
+endfunction: sample
+
+`endif //  __{:UPPERNAME:}_COVERAGE_SVH_

@@ -1,0 +1,18 @@
+`ifndef __{:UPPERNAME:}_COMMON_SVH_
+`define __{:UPPERNAME:}_COMMON_SVH_
+
+/* == CONSTANTS for {:NAME:} == */
+
+/* == TYPEDEFS and ENUMS ==*/
+
+/* == METHODS == */
+
+/* == CLASSES == */
+
+`uvm_analysis_imp_decl(_item);
+
+/* == OTHERS == */
+
+`endif // __{:UPPERNAME:}_COMMON_SVH_
+
+

@@ -1,0 +1,31 @@
+`ifndef __{:UPPERNAME:}_ITEM_SVH_
+`define __{:UPPERNAME:}_ITEM_SVH_
+
+class {:NAME:}_item extends uvm_sequence_item;
+    /* == Transaction Fields == */
+
+    `uvm_object_utils_begin({:NAME:}_item)
+    `uvm_object_utils_end
+    
+    function new(string name="{:NAME:}_item");
+      super.new(name);
+    endfunction: new
+    
+    /* == Constraints == */
+
+    /* == Methods == */
+    // extern function void pre_randomize();
+    // extern function void post_randomize();
+endclass: {:NAME:}_item
+
+/* == Implementation == */
+
+// function void {:NAME:}_item::pre_randomize();
+//    super.pre_randomize();
+// endfunction: pre_randomize
+
+// function void {:NAME:}_item::post_randomize();
+//    super.post_randomize();
+// endfunction: post_randomize
+
+`endif // __{:UPPERNAME:}_ITEM_SVH_

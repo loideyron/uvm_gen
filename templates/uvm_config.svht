@@ -1,0 +1,44 @@
+`ifndef __{:UPPERNAME:}_CONFIG_SVH_
+`define __{:UPPERNAME:}_CONFIG_SVH_
+
+class {:NAME:}_config extends uvm_object;
+    /* == Virtual Interface/s == */
+    virtual {:NAME:}_interface vif;    
+    
+    /* == Register Model Handle == */
+    {:NAME:}_reg_model rgm;
+
+    /* == Configuration Fields == */
+    // agent is active/passive
+    uvm_active_passive_enum is_active = UVM_ACTIVE;
+    // include the functional coverage or not
+    bit has_functional_coverage = 0;
+
+    `uvm_object_utils_begin({:NAME:}_config)
+        `uvm_field_enum(uvm_active_passive_enum, is_active, UVM_ALL_ON)
+        `uvm_field_int(has_functional_coverage, UVM_ALL_ON)
+        `uvm_field_int(has_scoreboard, UVM_ALL_ON)
+    `uvm_object_utils_end
+
+    function new(string name = "{:NAME:}_config");
+        super.new(name);
+    endfunction: new
+
+    /* == Constraints ==*/
+
+    /* == Methods == */
+    // extern function void pre_randomize();
+    // extern function void post_randomize();
+endclass: {:NAME:}_config
+
+/* == Implementation == */
+
+// function void {:NAME:}_config::pre_randomize();
+//    super.pre_randomize();
+// endfunction: pre_randomize
+
+// function void {:NAME:}_config::post_randomize();
+//    super.post_randomize();
+// endfunction: post_randomize
+
+`endif // __{:UPPERNAME:}_CONFIG_SVH_

@@ -1,0 +1,69 @@
+`ifndef __{:UPPERNAME:}_AGENT_SVH_
+`define __{:UPPERNAME:}_AGENT_SVH_
+
+class {:NAME:}_agent extends uvm_agent;
+    /* == Configuration Handle == */
+    {:NAME:}_config m_cfg;
+
+    /* == Component Members == */
+    {:NAME:}_sequencer  m_sqr;
+    {:NAME:}_driver     m_drv;
+    {:NAME:}_monitor    m_mon;
+    {:NAME:}_coverage   m_cov;
+
+    /* == Analysis Ports == */
+    uvm_analysis_port #({:TRANSACTION:}) m_ap;
+   
+    /* == Component Fields == */
+
+    `uvm_component_utils_begin({:NAME:}_agent)
+        `uvm_field_object(m_cfg, UVM_ALL_ON)
+    `uvm_component_utils_end
+
+    function new(string name, uvm_component parent);
+        super.new(name, parent);
+    endfunction: new
+    
+    /* == Phases == */
+    extern virtual function void    build_phase(uvm_phase phase);
+    extern virtual function void    connect_phase(uvm_phase phase);
+    extern virtual function void    start_of_simulation_phase(uvm_phase phase);
+endclass: {:NAME:}_agent
+
+/* == Implementation == */
+
+function void {:NAME:}_agent::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (m_cfg == null) begin
+        if (!uvm_config_db #({:NAME:}_config)::get(this, "", "m_cfg", m_cfg)) begin
+            `uvm_fatal("CFG", "Missing configuration object!")
+        end
+    end
+    uvm_config_db #({:NAME:}_config)::set(this, "*", "m_cfg", m_cfg);
+
+    if (m_cfg.is_active) begin
+        m_drv = {:NAME:}_driver::type_id::create("m_drv", this);
+        m_sqr = {:NAME:}_sequencer::type_id::create("m_sqr", this);
+    end
+    m_mon = {:NAME:}_monitor::type_id::create("m_mon", this);
+
+    if (m_cfg.has_functional_coverage) begin
+        m_cov = {:NAME:}_coverage::type_id::create("m_cov", this);
+    end 
+endfunction: build_phase
+
+function void {:NAME:}_agent::connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+
+    if (m_cfg.is_active) begin
+        m_drv.seq_item_port.connect(m_sqr.seq_item_export);
+        m_drv.rsp_port.connect(m_sqr.rsp_export);
+    end
+    m_ap = m_mon.m_ap;
+endfunction: connect_phase
+
+function void {:NAME:}_agent::start_of_simulation_phase(uvm_phase phase);
+    super.start_of_simulation_phase(phase);
+endfunction: start_of_simulation_phase
+
+`endif // __{:UPPERNAME:}_AGENT_SVH_

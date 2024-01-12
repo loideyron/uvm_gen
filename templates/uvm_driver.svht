@@ -1,0 +1,67 @@
+`ifndef __{:UPPERNAME:}_DRIVER_SVH_
+`define __{:UPPERNAME:}_DRIVER_SVH_
+
+class {:NAME:}_driver extends uvm_driver #({:TRANSACTION:});
+    /* == Configuration Handle == */
+    {:NAME:}_config m_cfg;
+    
+    /* == Virtual Interface == */
+    virtual {:NAME:}_interface vif;
+   
+    /* == Component Fields == */ 
+
+    `uvm_component_utils_begin({:NAME:}_driver)
+        `uvm_field_object(m_cfg, UVM_ALL_ON)
+    `uvm_component_utils_end
+
+    function new(string name, uvm_component parent = null);
+        super.new(name, parent);
+    endfunction: new    
+
+    /* == Phases == */
+    extern virtual function void    build_phase(uvm_phase phase);
+    extern virtual function void    connect_phase(uvm_phase phase);
+    extern virtual task             run_phase(uvm_phase phase);
+    
+    /* == Methods == */ 
+    extern virtual task init(uvm_phase phase); 
+    extern virtual task drive_item(REQ req, RSP rsp);
+endclass : {:NAME:}_driver
+
+/* == Implementation == */
+
+function void {:NAME:}_driver::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if (m_cfg == null) begin
+        if (!uvm_config_db #({:NAME:}_config)::get(this, "", "m_cfg", m_cfg)) begin
+            `uvm_fatal("CFG", "Missing configuration object!")
+        end
+    end
+endfunction : build_phase
+
+function void {:NAME:}_driver::connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+    vif = m_cfg.vif;
+endfunction : connect_phase
+
+task {:NAME:}_driver::run_phase(uvm_phase phase);
+    init(phase);
+    forever begin
+        REQ req;
+        RSP rsp;
+
+        seq_item_port.get_next_item(req);
+        drive_item(req, rsp);
+        seq_item_port.item_done(rsp);
+    end
+endtask : run_phase
+
+task {:NAME:}_driver::init(uvm_phase phase);
+    // TODO - drive default values
+endtask : init
+
+task {:NAME:}_driver::drive_item(REQ req, RSP rsp);
+    // TODO - drive pins
+endtask : drive_item
+
+`endif // _{:UPPERNAME:}_DRIVER_SVH_

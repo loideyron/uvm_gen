@@ -1,0 +1,34 @@
+`ifndef __{:UPPERNAME:}_TEST_SVH_
+`define __{:UPPERNAME:}_TEST_SVH_
+
+class {:NAME:}_test extends {:BASE:}_base_test;
+    `uvm_component_utils({:NAME:}_test)
+    
+    /* == Test Sequence/s == */
+    // TODO: declare test sequence/s
+
+    /* == Test Fields == */
+    
+    /* == Test Constraints == */ 
+
+    function new(string name = "{:NAME:}_test", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction: new
+    
+    /* == AIS UVM Methods == */
+    extern protected virtual function void override_uvm();
+    /* == Main == */
+    extern protected virtual task main();
+endclass: {:NAME:}
+
+/* == Implementation == */
+
+function void {:NAME:}_test::override_uvm();
+    super.override_uvm();
+endfunction: override_uvm
+
+task {:NAME:}_test::main();
+    // TODO: implement test
+endtask: main
+
+`endif // __{:UPPERNAME:}_TEST_SVH_

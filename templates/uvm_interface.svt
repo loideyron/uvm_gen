@@ -1,0 +1,19 @@
+`ifndef __{:UPPERNAME:}_INTERFACE_SV_
+`define __{:UPPERNAME:}_INTERFACE_SV_
+
+interface {:NAME:}_interface (
+    /* == Port List == */
+);
+    /* == Signal List == */
+    logic clk;
+    logic reset_n;
+
+    /* == Clocking Blocks == */
+
+    /* == ModPorts == */
+
+    /* == Assertions == */
+
+endinterface: {:NAME:}_interface 
+
+`endif // __{:UPPERNAME:}_INTERFACE_SV_
